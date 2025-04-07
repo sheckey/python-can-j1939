@@ -23,11 +23,17 @@ class ParameterGroupNumber:
           have to, how to name the other PGN object?
     """
 
+    class PF:
+        ETP_DT     = 0xC7
+        ETP_CM     = 0xC8
+
     class PGN:
         FEFF_MULTI_PG       =  9472  # 2500
         FD_TP_CM            = 19712  # 4D00
         FD_TP_DT            = 19968  # 4E00
 
+        ETP_DT              = 50944  # C700
+        ETP_CM              = 51200  # C800
         REQUEST             = 59904  # EA00
         #ACKNOWLEDGEMENT    = 59392
         ADDRESSCLAIM        = 60928  # EE00

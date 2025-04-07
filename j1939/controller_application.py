@@ -253,7 +253,11 @@ class ControllerApplication:
         mid = j1939.MessageId(priority=priority, parameter_group_number=parameter_group_number, source_address=self._device_address)
         self._ecu.send_message(mid.can_id, True, data)
 
-    def send_pgn(self, data_page, pdu_format, pdu_specific, priority, data, time_limit=0, frame_format=FrameFormat.FEFF):
+    # JBECK I don't think I like this API supporting regular, 8-byte CAN messages where you don't need and don't want to specify
+    #       a destination address, while also supporting transfers (>8 bytes) where you do need to specify a destination.
+    #       having it default to 0 here makes it handy to not have to specify it for 8-byte payloads, but then you can
+    #       can silently forget for transfers.  Maybe we should just have two different functions offered with differetn APIs.
+    def send_pgn(self, data_page, pdu_format, pdu_specific, priority, data, destination=0, time_limit=0, frame_format=FrameFormat.FEFF):
         """send a pgn
         :param int data_page: data page
         :param int pdu_format: pdu format
@@ -267,7 +271,7 @@ class ControllerApplication:
         if self.state != ControllerApplication.State.NORMAL:
             raise RuntimeError("Could not send message unless address claiming has finished")
 
-        return self._ecu.send_pgn(data_page, pdu_format, pdu_specific, priority, self._device_address, data, time_limit, frame_format)
+        return self._ecu.send_pgn(data_page, pdu_format, pdu_specific, priority, self._device_address, destination, data, time_limit, frame_format)
 
     def send_request(self, data_page, pgn, destination):
         """send a request message
